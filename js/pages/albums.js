@@ -1,28 +1,28 @@
 var albumComponent = require('../components/album');
+var router = Router();
 
 module.exports = {
     //the Todo class has two properties
     controller: function(args) {
-        console.log(args);
+
         var ctrl = this;
         ctrl.albums = args.albums;
 
-        ctrl.albumOpened = m.prop(false);
-        ctrl.album = {
-            current: m.prop(0)
-        };
-
         ctrl.openAlbum = function(albumId){
-            // console.log('Open album',albumId);
-            ctrl.album.current = albumId;
-            ctrl.albumOpened(true);
-            // mount and initalise album component
-            m.mount($('footer')[0],m.component(albumComponent,ctrl.album));
+            var goToRoute = 'album/' + albumId;
+            var currRoute = router.getRoute().join('/');
+
+            if (goToRoute == currRoute){
+                // move bellow lines to mount album funt helper
+                var album = {
+                    id: albumId
+                };
+                return m.mount($('footer')[0],m.component(albumComponent,album));
+
+            } else return router.setRoute(goToRoute);
+
         }
-        // if (args.albumId) { // lodash if not undefined
-        // ctrl.openAlbum(args.albumId)
-        // ctrl.openAlbum(1)
-        // }
+
     },
     view: function(ctrl,args) {
         return m('.albums-view',[
@@ -37,7 +37,6 @@ module.exports = {
                     ctrl.albums.map(function(album){
                         return albumsCard(ctrl.openAlbum,album)
                     }),
-                    // ctrl.albumOpened() ? m.component(albumComponent,ctrl.album) : ''
                 ])
             ]),
         ]);

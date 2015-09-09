@@ -1,48 +1,60 @@
 var splashPage = require('./pages/splash');
 var albumsPage = require('./pages/albums');
 var Albums = require('./models/albums');
+var albumComponent = require('./components/album');
 var animateNextRoute = require('./animations').animateNextRoute;
 
-var pageContainer = $('main')[0];
+var albumsRoute = function(){
+
+    return animateNextRoute([
+        Albums.list(),
+        // getPageName
+    ]).spread(function(albums){
+
+        $('main').html($('<div class="main-container container">'));
+
+        var inject = {
+            albums: albums
+        };
+
+        return m.mount($('.main-container')[0], m.component(albumsPage,inject));
+    });
+}
 var routes = {
     '/': function(){
         // servise check if logged in
         // servise get cover img
         animateNextRoute([])
         .then(function(data){
-            console.log(data);
+            // console.log(data);
             m.mount($('main')[0],splashPage);
         });
     },
-    '/albums': function(){
+    '/albums': albumsRoute,
+    '/album/:id': function(id){
+        Promise.resolve($('.main-container')[0])
+        .then(function(albumsView){
 
-        animateNextRoute([
-            Albums.list()
-        ]).spread(function(albums){
-
-            var inject = {
-                albums: albums
+            if (!albumsView){ // if there is no view
+                return albumsRoute();
             }
 
-            $('main').html($('<div class="main-container container">'))
+            return;
+        }).then(function(){
 
-            m.mount($('.main-container')[0], m.component(albumsPage,inject));
+            if ( !isNaN(id) ) { // lodash if not undefined
+
+                var album = {
+                    id: id
+                };
+                console.log('who')
+                return m.mount($('footer')[0],m.component(albumComponent,album));
+            }
         });
     },
-    '/album/:id': function(id){
-        console.log(id)
-    },
-    '/about': function(){
-        // animateNextRoute([3])
-        // .spread(function(num){
-        //     var inject = {}
-        //
-        //     $('main').html($('<div class="main-container container">'));
-        //
-        //     m.mount( $('.main-container')[0], m.component( albumsPage, inject ) );
-        // });
-    }
+    '/about': function(){}
 };
+
 var router = Router(routes);
 module.exports = {
     //
