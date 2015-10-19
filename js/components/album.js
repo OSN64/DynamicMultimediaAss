@@ -2,14 +2,23 @@ var progressLoader = require('../components/progressLoader');
 
 module.exports = {
     //the Todo class has two properties
+
     controller: function(args) {
+        args = args || {};
         var ctrl = this;
-        ctrl.id = args.id;
-        // ctrl.album = m.prop({});
+        ctrl.album = m.prop({});
         ctrl.imgs = m.prop([]);
-        ctrl.error = '';
-        // m.redraw.strategy("none")
-        ctrl.getAlbum = function(id){
+        // ctrl.modalOpen = m.prop(false);
+        ctrl.error = m.prop('');
+
+        ctrl.id = args.id;
+        // m.redraw.strategy("none");
+
+        ctrl.openAlbum = function(id){
+            // $('.album-modal').openModal();
+            // ctrl.modalOpen(true);
+            // m.redraw(true);
+            // console.log('in redraw')
             console.log('leng',ctrl.imgs().length);
             // request
             Promise.delay(1000).then(function(){
@@ -25,17 +34,33 @@ module.exports = {
             }).then(ctrl.imgs)//  set as img
             .then(function(images){
                 // console.log(images)
-                if(_.isEmpty(images))
-                    ctrl.error = 'No images were found';
+                if(!images.length)
+                    ctrl.error( 'No images were found');
                 // console.log('leng',ctrl.imgs().length);
                 console.log('redraw')
             }).then(m.redraw);
         }
-        ctrl.getAlbum(ctrl.id)
+        // window.Observable.on(["openAlbum"],function(e){
+        //     console.log('openenen: ' , e);
+        //     ctrl.imgs([
+        //         {src:'kk.img'}
+        //     ])
+        //     m.redraw(1)
+        //     // ctrl.openAlbum(e.id);
+        // })
+        // ctrl.onunload = function(){
+        //     Observable.off(ctrl.openAlbum) // stop listening
+        //     console.log('unloading')
+        // }
+        // if(!args) return ctrl.error(' No Id Specified');
+
+        // return {}
+        ctrl.openAlbum(ctrl.id)
+
     },
     view: function(ctrl,args) {
         // loading
-        console.log('state change')
+        console.log('state change',ctrl);
         // console.log($('.album-modal').html())
         return m('.album-modal', {class: "modal modal-fixed-footer", config:modalOpen}, [
             m('.modal-content',[
@@ -43,10 +68,11 @@ module.exports = {
                 m('p',"A bunch of text"),
                 m('p',ctrl.id),
                 function checkState(){
+                    console.log('stt',ctrl.error())
                     // console.log('state',ctrl.error)
-                    if (!_.isEmpty(ctrl.error)) return errorView(ctrl.error);
+                    if (ctrl.error()) return errorView(ctrl.error);
                     // image view
-                    else if (!_.isEmpty(ctrl.imgs())) return imgsView(ctrl.imgs);
+                    else if (ctrl.imgs().length) return imgsView(ctrl.imgs);
                     // animated progress icon
                     else return m.component( progressLoader, {id: 'album-load-progress'} );
                 }(),
@@ -57,8 +83,8 @@ module.exports = {
         ]);
     }
 };
-// seperate thumbTocomponent
-
+// // seperate thumbTocomponent
+//
 var imgsView = function(images){
     // console.log('image view',images());
     // row col 3
@@ -68,20 +94,28 @@ var imgsView = function(images){
     return m('h1','images');
 }
 var modalOpen = function(element, isInitialized, context) {
+        // console.log('open modal',canOpen(),element, isInitialized, context)
     if (!isInitialized) {
+      // use different modal library
+      // remove all events listeneing
+    //   Observable.off(["openAlbumModal"],openModal.bind(null,element));
+    //   Observable.on(["openAlbumModal"],openModal.bind(null,element));
+    console.log('opened')
+
         $(element).openModal();
+      function openModal(el){
+      }
         // console.log('open',element,context)
-        console.log('open modal')
     }
     // $('.album-modal').closeModal();
 };
-// row columns
-var imageCard = function(){
-    return
-
-
-
-}
+// // row columns
+// var imageCard = function(){
+//     return
+//
+//
+//
+// }
 var errorView = function(error){
     return m('h2', error)
 }

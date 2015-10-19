@@ -1,52 +1,90 @@
+//
+// var router = Router();
+//
+var progressLoader = require('../components/progressLoader');
+var Albums = require('../models/albums');
 var albumComponent = require('../components/album');
-var router = Router();
-
 module.exports = {
-    //the Todo class has two properties
-    controller: function(args) {
-
+    //     //the Todo class has two properties
+    controller: function() {
+        console.log('aaa')
         var ctrl = this;
-        ctrl.albums = args.albums;
+        ctrl.albums = m.prop([]);
+        ctrl.albumOpen = m.prop(false);
 
-        ctrl.openAlbum = function(albumId){
-            var goToRoute = 'album/' + albumId;
-            var currRoute = router.getRoute().join('/');
+        // m.component( progressLoader, {id: 'page-load-progress'})
+        ctrl.onunload = function(){
+            console.log('this unloaded');
+        }
+        ctrl.openAlbum = function(id){
+            var route = '/album/' + id;
+            // var currRoute = router.getRoute().join('/');
 
-            if (goToRoute == currRoute){
-                // move bellow lines to mount album funt helper
-                var album = {
-                    id: albumId
-                };
-                return m.mount($('footer')[0],m.component(albumComponent,album));
+            var currRouteIsSame = m.route() == route;
+            console.log(route,m.route(),currRouteIsSame)
 
-            } else return router.setRoute(goToRoute);
+            if(currRouteIsSame){ // just moved in from route change
+                ctrl.albumOpen(true);
+                // console.log('open:',ctrl.albumOpen());
+                // m.redraw(true);
+            }
+            else m.route(route);
+            // if (goToRoute == currRoute){
+            //     // move bellow lines to mount album funt helper
+            //     var album = {
+            //         id: albumId
+            //     };
+            //     // return ;
+            //
+            // } else return router.setRoute(route);
 
         }
 
+        var currAlbumId = +m.route.param("id"); // convert to integer
+
+        if(!isNaN(currAlbumId)){
+            ctrl.openAlbum(currAlbumId);
+        }
+        Albums.list()
+        .then(ctrl.albums)
+        .then(m.redraw);
+
     },
-    view: function(ctrl,args) {
-        return m('.albums-view',[
-            m('#album-head', [
-                m('h1', "titile"),
-                m('p', "desctript")
-            ]),
-            m('#albums-content', [
-                m('h1', "destination"),
-                m('.divider'),
-                m('.albums-items.row', [
-                    ctrl.albums.map(function(album){
-                        return albumsCard(ctrl.openAlbum,album)
-                    }),
-                ])
-            ]),
+    view: function(ctrl) {
+        // return m.component( progressLoader, {id: 'page-load-progress'});
+        return m('.container', [
+            !ctrl.albums().length ?  m.component( progressLoader, {id: 'page-load-progress'}) :
+            m('.albums-view',[
+
+                m('#album-head', [
+                    albumsHead()
+                ]),
+                m('#albums-content', [
+                    m('h1', "destination"),
+                    m('.divider'),
+                    m('.albums-items.row', [
+                        ctrl.albums().map(function(album){
+                            return albumsCard(ctrl.openAlbum,album)
+                        }),
+                    ])
+                ]),
+                ctrl.albumOpen() ? m.component(albumComponent, {id:m.route.param("id")}) : ''
+            ])
         ]);
     }
 };
+var albumsHead = function(){
+    // ge descript
+    return [
+        m('h1', "titile"),
+        m('p', "desctript")
+    ]
+}
 
 var albumsCard = function(onclick,album){
     return m('.col.s12.m6.l3',[
         m('.card-image.waves-effect',{onclick: onclick.bind(onclick,album.id)},[
-            m('img.responsive-img',{src: "http://lorempicsum.com/up/400/400/6"}),
+            m('img.responsive-img',{src: "/images/placeholder.jpg"}), //http://lorempicsum.com/up/400/400/6
             m('span.card-title',album.name)
         ])
     ]);

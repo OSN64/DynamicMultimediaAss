@@ -1,4 +1,4 @@
-
+var Services = require('../services');
 module.exports = {
     //the Todo class has two properties
     controller: function() {},
@@ -27,13 +27,19 @@ var centerParallaxItem = function(){
                     ]),
                     m('.splash-content', [
                         m('.col.l10.m8.s12', [
-                            m.trust('<h4 class="grey-text darken-2 light">Kiosk Browser Lockdown</h4>'),
-                            m.trust('<h5 class="grey-text darken-2 light">ProCo Apps</h5>'),
-                            m.trust('<p><a class="waves-effect waves-light btn light-green darken-1" href="https://play.google.com/store/apps/details?id=com.procoit.kioskbrowser" rel="noreferrer"><i class="mdi-av-play-shopping-bag left"></i>Download Free</a>&nbsp;<a class="waves-effect waves-light btn teal" href="https://sites.fastspring.com/androidkiosk/instant/kioskbrowserpro&amp;tags=kioskbrowser" rel="noreferrer"><i class="mdi-action-credit-card left"></i>Buy Pro £5.00*</a><br>'),
-                            m.trust('<span style="font-size: 0.5em;">*Plus tax where applicable</span></p>'),
-                            m.trust('<p class="grey-text darken-3">Kiosk Browser has been designed for use on any android device and is great for creating public kiosks, interactive digital signage etc…. It locks down the user interface so that the end-user isn’t able to adjust Android system settings or gain access to other applications.</p>'),
-                            m.trust('<p class="grey-text darken-3">We are always adding new features, if you need something specific for your project please get in touch.</p>'),
-                            m.trust('<p><a class="waves-effect waves-light btn light-blue darken-3" href="http://www.android-kiosk.com/screenshots" rel="noreferrer"><i class="mdi-image-photo-camera left"></i>Screenshots</a></p>')
+                            fbLoginComponent,
+                            m('h4.grey-text.darken-2.light','hehehe')
+                        ]),
+                        m('.col.l10.m8.s12', [
+                            // m.trust('<h4 class="grey-text darken-2 light">Kiosk Browser Lockdown</h4>'),
+                            // fbLoginComponent || 'ss'
+                            // m.trust('<a class="btn-floating waves-effect waves-light btn-large red"><i class="material-icons">add</i></a>'),
+                            // m.trust('<h5 class="grey-text darken-2 light">ProCo Apps</h5>'),
+                            // m.trust('<p><a class="waves-effect waves-light btn light-green darken-1" href="https://play.google.com/store/apps/details?id=com.procoit.kioskbrowser" rel="noreferrer"><i class="mdi-av-play-shopping-bag left"></i>Download Free</a>&nbsp;<a class="waves-effect waves-light btn teal" href="https://sites.fastspring.com/androidkiosk/instant/kioskbrowserpro&amp;tags=kioskbrowser" rel="noreferrer"><i class="mdi-action-credit-card left"></i>Buy Pro £5.00*</a><br>'),
+                            // m.trust('<span style="font-size: 0.5em;">*Plus tax where applicable</span></p>'),
+                            // m.trust('<p class="grey-text darken-3">Kiosk Browser has been designed for use on any android device and is great for creating public kiosks, interactive digital signage etc…. It locks down the user interface so that the end-user isn’t able to adjust Android system settings or gain access to other applications.</p>'),
+                            // m.trust('<p class="grey-text darken-3">We are always adding new features, if you need something specific for your project please get in touch.</p>'),
+                            // m.trust('<p><a class="waves-effect waves-light btn light-blue darken-3" href="http://www.android-kiosk.com/screenshots" rel="noreferrer"><i class="mdi-image-photo-camera left"></i>Screenshots</a></p>')
                         ])
                     ])
                 ])
@@ -46,3 +52,19 @@ var parallaxConf = function(el, isInit, context) {
         $('.parallax').parallax();
     }
 };
+var fbLoginComponent = {
+    controller: function () {
+        function login(){
+            Services.FB.invokeLoginDialogue()
+        }
+        return {
+            login:login
+        }
+    },
+    view: function (ctrl) {
+        var loginBtn = m('.btn-floating.waves-effect.waves-light.btn-large.blue', {onclick: ctrl.login}, [
+            m('i.fa.fa-facebook')
+        ])
+        return m('.btn-fb-login',loginBtn)
+    }
+}

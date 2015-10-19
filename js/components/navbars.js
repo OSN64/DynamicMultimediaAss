@@ -8,8 +8,12 @@ var sideLinks = [
 ];
 // m("li", {class: selected ? "active" : ""})
 module.exports = {
-    controller: function() {},
+    controller: function() {
+        m.redraw.strategy("diff");
+    },
     view: function(ctrl) {
+        // console.log('dont')
+        // m.redraw.strategy("none");
         return m('nav', {config: navConf}, m('.nav-wrapper', [
             m('a', { href: '#!', class: 'brand-logo center' }, 'logo'),
 
@@ -35,4 +39,6 @@ var navConf = function(element, isInitialized, context) {
             // closeOnClick: true
         });
     }
+
+
 };

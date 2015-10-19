@@ -53,3 +53,8 @@ header, main, footer {
     padding: 20px;
 
 }
+.btn-fb-login {
+    position: relative;
+    left: 100%;
+    top: -30px;
+}

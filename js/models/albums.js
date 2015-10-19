@@ -13,7 +13,7 @@ module.exports = {
                 name: 'blash'
             }
         }
-        return Promise.resolve(list);
+        return Promise.delay(2000).then(function(){return list});
     }
 }
 // console.log(this)
