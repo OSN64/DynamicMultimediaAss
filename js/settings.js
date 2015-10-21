@@ -1,12 +1,12 @@
-var app = window.app = {};
+var app = {};
 
 
 app.appId = "";
 
-app.url = "http://nigga.linuxx.org:50/";
+app.pageId = "";
 
-app.loginRedirectRoute = "/"
-app.urlLoginRedirect = app.url + '#/' + app.loginRedirectRoute
+app.url = "";
 
-// not exporting anything
-module.exports = {}
+app.loginRedirectRoute = "/fbLogin"
+
+module.exports = app;

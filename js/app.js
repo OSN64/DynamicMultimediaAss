@@ -1,10 +1,10 @@
 // domready
 $( document ).ready(function(){
-    // window.Observable = require('./helper').Observable.call(); // event systsem
+    // Observable = require('./helper').Observable.call(); // event systsem
 
     var navbars = require('./components/navbars');
     var albumComponent = require('./components/album');
-    require('./settings');
+    var settings = require('./settings'); // load settings
     // router.init();
     // m.route.mode = "hash";
     // m.route(document.getElementsByClassName('main-container')[0] , '/', router.routes);
@@ -17,6 +17,7 @@ $( document ).ready(function(){
     //     }
     // }
     // m.mount(document.getElementsByTagName('header')[0],ss);
+    // m.computati start
     var router = require('./router');
     m.mount(document.getElementsByTagName('header')[0], navbars);
 

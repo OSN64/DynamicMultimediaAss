@@ -1,4 +1,7 @@
 var Services = require('../services');
+var Storage = require('../helper').storage;
+// var fbLoginComponent = require('../components/fbLogin');
+
 module.exports = {
     //the Todo class has two properties
     controller: function() {},
@@ -54,11 +57,27 @@ var parallaxConf = function(el, isInit, context) {
 };
 var fbLoginComponent = {
     controller: function () {
-        function login(){
-            Services.FB.invokeLoginDialogue()
+        var error = m.prop('');
+        var accessToken = Storage('accessToken');
+
+        // check if Url Has token
+
+        var params = Services.FB.getLoginUrlParams();
+
+        if(params.accessToken){
+
+            console.log('storeaccess');
+            accessToken(params.accessToken); // store in local storage
+            m.route('/albums');
         }
+        else if (params.error){
+            error(params.errorDescription) // show error
+            console.log('tken error', params);
+        }
+
         return {
-            login:login
+            error: error,
+            login: Services.FB.invokeLoginDialogue
         }
     },
     view: function (ctrl) {

@@ -40,14 +40,6 @@ module.exports = {
                 console.log('redraw')
             }).then(m.redraw);
         }
-        // window.Observable.on(["openAlbum"],function(e){
-        //     console.log('openenen: ' , e);
-        //     ctrl.imgs([
-        //         {src:'kk.img'}
-        //     ])
-        //     m.redraw(1)
-        //     // ctrl.openAlbum(e.id);
-        // })
         // ctrl.onunload = function(){
         //     Observable.off(ctrl.openAlbum) // stop listening
         //     console.log('unloading')

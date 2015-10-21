@@ -1,27 +1,28 @@
-//
-// var router = Router();
-//
 var progressLoader = require('../components/progressLoader');
-var Albums = require('../models/albums');
 var albumComponent = require('../components/album');
+var Services = require('../services');
+var Models = require('../models');
+var Page = Models.Page;
+var Albums = Models.Albums;
+
 module.exports = {
     //     //the Todo class has two properties
     controller: function() {
         console.log('aaa')
-        var ctrl = this;
-        ctrl.albums = m.prop([]);
-        ctrl.albumOpen = m.prop(false);
+        // var error = m.prop('');
+        var page = m.prop({});
+        var albums = m.prop([]);
+        var albumOpen = m.prop(false);
 
-        // m.component( progressLoader, {id: 'page-load-progress'})
-        ctrl.onunload = function(){
+        var onunload = function(){
             console.log('this unloaded');
         }
-        ctrl.openAlbum = function(id){
+        
+        var openAlbum = function(id){
             var route = '/album/' + id;
-            // var currRoute = router.getRoute().join('/');
 
             var currRouteIsSame = m.route() == route;
-            console.log(route,m.route(),currRouteIsSame)
+            // console.log(route,m.route(),currRouteIsSame)
 
             if(currRouteIsSame){ // just moved in from route change
                 ctrl.albumOpen(true);
@@ -29,15 +30,6 @@ module.exports = {
                 // m.redraw(true);
             }
             else m.route(route);
-            // if (goToRoute == currRoute){
-            //     // move bellow lines to mount album funt helper
-            //     var album = {
-            //         id: albumId
-            //     };
-            //     // return ;
-            //
-            // } else return router.setRoute(route);
-
         }
 
         var currAlbumId = +m.route.param("id"); // convert to integer
@@ -45,11 +37,38 @@ module.exports = {
         if(!isNaN(currAlbumId)){
             ctrl.openAlbum(currAlbumId);
         }
-        Albums.list()
-        .then(ctrl.albums)
-        .then(m.redraw);
+
+        Services.FB.checkTokenValid().then(function(valid){
+            if(!valid) return Promise.reject('Token Not Valid');
+
+            return Promise.all([
+                Page.getDetails(),
+                Albums.list()
+            ]);
+        }).then(function(all){ // set valuse
+
+            page(all[0]);
+            albums(all[1]);
+        }).then(m.redraw,function(e){
+
+            console.log('error Token Not Valid', e)
+            // popup service
+            // pop up 'invalid Login token' .. redirect home
+            // return m.route('/')
+        });
+
+        return {
+            page: page, // object
+            albums: albums, // array
+            albumOpen: albumOpen, // bool
+            openAlbum: openAlbum, // function
+
+            // error: error, // string
+            onunload: onunload
+        }
 
     },
+
     view: function(ctrl) {
         // return m.component( progressLoader, {id: 'page-load-progress'});
         return m('.container', [
@@ -57,7 +76,7 @@ module.exports = {
             m('.albums-view',[
 
                 m('#album-head', [
-                    albumsHead()
+                    albumsHead(ctrl.page)
                 ]),
                 m('#albums-content', [
                     m('h1', "destination"),
@@ -73,11 +92,10 @@ module.exports = {
         ]);
     }
 };
-var albumsHead = function(){
-    // ge descript
+var albumsHead = function(page){
     return [
-        m('h1', "titile"),
-        m('p', "desctript")
+        m('h1', page().name),
+        m('p', page().description)
     ]
 }
 
