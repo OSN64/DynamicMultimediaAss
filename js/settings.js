@@ -1,12 +1,10 @@
-var app = {};
+module.exports = {
+    appId: "",
+    pageId: "",
 
+    adminUid: "",
 
-app.appId = "";
+    url: "http://test.com",
 
-app.pageId = "";
-
-app.url = "";
-
-app.loginRedirectRoute = "/fbLogin"
-
-module.exports = app;
+    loginRedirectRoute: "/fbLogin"
+};

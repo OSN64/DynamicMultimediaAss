@@ -31,7 +31,7 @@ module.exports = {
         checkTokenValid: function(){
             var url = "https://graph.facebook.com/debug_token?input_token=" + accessToken();
             url = url + "&access_token=" + accessToken();
-            console.log('check Token', url)
+            // console.log('check Token', url)
 
             return m.request({
                 method: "GET",

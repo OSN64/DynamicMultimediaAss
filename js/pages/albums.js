@@ -12,12 +12,13 @@ module.exports = {
         // var error = m.prop('');
         var page = m.prop({});
         var albums = m.prop([]);
+        var visitorsPosts = m.prop([]);
         var albumOpen = m.prop(false);
 
         var onunload = function(){
             console.log('this unloaded');
         }
-        
+
         var openAlbum = function(id){
             var route = '/album/' + id;
 
@@ -25,9 +26,7 @@ module.exports = {
             // console.log(route,m.route(),currRouteIsSame)
 
             if(currRouteIsSame){ // just moved in from route change
-                ctrl.albumOpen(true);
-                // console.log('open:',ctrl.albumOpen());
-                // m.redraw(true);
+                albumOpen(true);
             }
             else m.route(route);
         }
@@ -35,7 +34,7 @@ module.exports = {
         var currAlbumId = +m.route.param("id"); // convert to integer
 
         if(!isNaN(currAlbumId)){
-            ctrl.openAlbum(currAlbumId);
+            openAlbum(currAlbumId);
         }
 
         Services.FB.checkTokenValid().then(function(valid){
@@ -43,12 +42,14 @@ module.exports = {
 
             return Promise.all([
                 Page.getDetails(),
-                Albums.list()
+                Albums.list(),
+                Page.getVisitorsPosts()
             ]);
         }).then(function(all){ // set valuse
 
             page(all[0]);
             albums(all[1]);
+            visitorsPosts(all[2]);
         }).then(m.redraw,function(e){
 
             console.log('error Token Not Valid', e)
@@ -56,7 +57,7 @@ module.exports = {
             // pop up 'invalid Login token' .. redirect home
             // return m.route('/')
         });
-
+        // redraw stategy div
         return {
             page: page, // object
             albums: albums, // array
@@ -70,7 +71,6 @@ module.exports = {
     },
 
     view: function(ctrl) {
-        // return m.component( progressLoader, {id: 'page-load-progress'});
         return m('.container', [
             !ctrl.albums().length ?  m.component( progressLoader, {id: 'page-load-progress'}) :
             m('.albums-view',[
@@ -79,7 +79,7 @@ module.exports = {
                     albumsHead(ctrl.page)
                 ]),
                 m('#albums-content', [
-                    m('h1', "destination"),
+                    m('h1', "Top Australia Destinations"),
                     m('.divider'),
                     m('.albums-items.row', [
                         ctrl.albums().map(function(album){
@@ -100,10 +100,10 @@ var albumsHead = function(page){
 }
 
 var albumsCard = function(onclick,album){
-    return m('.col.s12.m6.l3',[
+    return m('.col.s12.m6.l6',[
         m('.card-image.waves-effect',{onclick: onclick.bind(onclick,album.id)},[
-            m('img.responsive-img',{src: "/images/placeholder.jpg"}), //http://lorempicsum.com/up/400/400/6
-            m('span.card-title',album.name)
+            m('img.responsive-img',{src: album.coverSource, style: { height: '400px'}}),
+            m('span.card-title',album.name + ' Likes: ' + album.likes.length)
         ])
     ]);
 }

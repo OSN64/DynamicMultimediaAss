@@ -1,6 +1,4 @@
-var Services = require('../services');
-var Storage = require('../helper').storage;
-// var fbLoginComponent = require('../components/fbLogin');
+var fbLoginComponent = require('../components/fbLogin');
 
 module.exports = {
     //the Todo class has two properties
@@ -13,6 +11,7 @@ module.exports = {
         ]);
     }
 };
+
 var parallaxItem = function(img){
     return m('.parallax-container',[
         m('.parallax',[
@@ -20,6 +19,7 @@ var parallaxItem = function(img){
         ])
     ]);
 }
+
 var centerParallaxItem = function(){
     return m('#main-splash.section',[
         m('.row',[
@@ -50,40 +50,9 @@ var centerParallaxItem = function(){
         ])
     ]);
 }
+
 var parallaxConf = function(el, isInit, context) {
     if (!isInit) {
         $('.parallax').parallax();
     }
 };
-var fbLoginComponent = {
-    controller: function () {
-        var error = m.prop('');
-        var accessToken = Storage('accessToken');
-
-        // check if Url Has token
-
-        var params = Services.FB.getLoginUrlParams();
-
-        if(params.accessToken){
-
-            console.log('storeaccess');
-            accessToken(params.accessToken); // store in local storage
-            m.route('/albums');
-        }
-        else if (params.error){
-            error(params.errorDescription) // show error
-            console.log('tken error', params);
-        }
-
-        return {
-            error: error,
-            login: Services.FB.invokeLoginDialogue
-        }
-    },
-    view: function (ctrl) {
-        var loginBtn = m('.btn-floating.waves-effect.waves-light.btn-large.blue', {onclick: ctrl.login}, [
-            m('i.fa.fa-facebook')
-        ])
-        return m('.btn-fb-login',loginBtn)
-    }
-}

@@ -5,10 +5,6 @@ $( document ).ready(function(){
     var navbars = require('./components/navbars');
     var albumComponent = require('./components/album');
     var settings = require('./settings'); // load settings
-    // router.init();
-    // m.route.mode = "hash";
-    // m.route(document.getElementsByClassName('main-container')[0] , '/', router.routes);
-    // m.route('/')
     // var ss = {
     //     view: function(){
     //         return m('rr',{config:function(el,isInit,context){
@@ -23,10 +19,5 @@ $( document ).ready(function(){
 
     // m.mount($('footer')[0],albumComponent);
 
-    // router.init();
-
-
-    //initialize
-    // m.mount(document.getElementsByTagName('header')[0], Demo);
 
 });

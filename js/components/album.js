@@ -1,70 +1,64 @@
 var progressLoader = require('../components/progressLoader');
+var Models = require('../models');
+var Albums = Models.Albums;
 
 module.exports = {
     //the Todo class has two properties
 
     controller: function(args) {
         args = args || {};
-        var ctrl = this;
-        ctrl.album = m.prop({});
-        ctrl.imgs = m.prop([]);
-        // ctrl.modalOpen = m.prop(false);
-        ctrl.error = m.prop('');
 
-        ctrl.id = args.id;
+        var album = {
+            id: args.id, // static
+            name: m.prop(''),
+            photos: m.prop([])
+        };
+
+        // ctrl.modalOpen = m.prop(false);
+        var error = m.prop('');
+
         // m.redraw.strategy("none");
 
-        ctrl.openAlbum = function(id){
-            // $('.album-modal').openModal();
-            // ctrl.modalOpen(true);
-            // m.redraw(true);
-            // console.log('in redraw')
-            console.log('leng',ctrl.imgs().length);
-            // request
-            Promise.delay(1000).then(function(){
-                return {
-                    imgs: [
-                        {src:'kk.img'}
-                    ],
-                    name: 'bleejee'
-                };
-            }).then(function(data){
-                // set album variable
-                return data.imgs
-            }).then(ctrl.imgs)//  set as img
-            .then(function(images){
-                // console.log(images)
-                if(!images.length)
-                    ctrl.error( 'No images were found');
-                // console.log('leng',ctrl.imgs().length);
+        var openAlbum = function(id){
+            Albums.get(id)
+            .then(function(iAlbum){
+
+                album.name(iAlbum.name);
+                return iAlbum.photos
+            }).then(album.photos)//  set as img
+            .then(function(photos){
+
+                console.log(photos)
+                if(!photos.length)
+                    error( 'No photos were found');
+                console.log('leng',photos.length);
                 console.log('redraw')
+
             }).then(m.redraw);
         }
-        // ctrl.onunload = function(){
-        //     Observable.off(ctrl.openAlbum) // stop listening
-        //     console.log('unloading')
-        // }
-        // if(!args) return ctrl.error(' No Id Specified');
 
-        // return {}
-        ctrl.openAlbum(ctrl.id)
+        openAlbum(album.id);
+
+        return {
+            album: album,
+
+            error: error
+        }
 
     },
     view: function(ctrl,args) {
+        var album = ctrl.album;
+
         // loading
         console.log('state change',ctrl);
-        // console.log($('.album-modal').html())
         return m('.album-modal', {class: "modal modal-fixed-footer", config:modalOpen}, [
             m('.modal-content',[
-                m('h4',"Modal Header"),
-                m('p',"A bunch of text"),
-                m('p',ctrl.id),
+                m('h4', album.name()),
                 function checkState(){
                     console.log('stt',ctrl.error())
-                    // console.log('state',ctrl.error)
                     if (ctrl.error()) return errorView(ctrl.error);
-                    // image view
-                    else if (ctrl.imgs().length) return imgsView(ctrl.imgs);
+                    // photos component
+                    else if (album.photos().length) return m.component( photosComponent, {photos: album.photos()} );
                     // animated progress icon
                     else return m.component( progressLoader, {id: 'album-load-progress'} );
                 }(),
@@ -75,39 +69,48 @@ module.exports = {
         ]);
     }
 };
-// // seperate thumbTocomponent
 //
-var imgsView = function(images){
-    // console.log('image view',images());
-    // row col 3
-    // each thumb - desc, like count, like btn
-    // config to top fade in
-    // config hide then fade in slow
-    return m('h1','images');
-}
 var modalOpen = function(element, isInitialized, context) {
-        // console.log('open modal',canOpen(),element, isInitialized, context)
     if (!isInitialized) {
-      // use different modal library
-      // remove all events listeneing
-    //   Observable.off(["openAlbumModal"],openModal.bind(null,element));
-    //   Observable.on(["openAlbumModal"],openModal.bind(null,element));
-    console.log('opened')
-
         $(element).openModal();
-      function openModal(el){
-      }
-        // console.log('open',element,context)
     }
-    // $('.album-modal').closeModal();
 };
-// // row columns
-// var imageCard = function(){
-//     return
-//
-//
-//
-// }
 var errorView = function(error){
     return m('h2', error)
+}
+// // seperate thumbTocomponent
+var photosComponent = {
+    controller: function (args) {
+        args = args || {};
+        var photos = m.prop(args.photos);
+
+        return {
+            photos: photos
+        }
+    },
+    view: function(ctrl){
+        var openLightboxPhoto = function(photo){
+            console.log('open lightbox', photo);
+        }
+        // console.log('image view',images());
+        // row col 3
+        // each thumb - desc, like count, like btn
+        // config to top fade in
+        // config hide then fade in slow
+        return m('.photos.row', [
+            ctrl.photos().map(function(photo){
+                return photoCard(openLightboxPhoto,photo)
+            }),
+        ]);
+    }
+}
+// // row columns
+var photoCard = function(onclick,photo){
+    // console.log(photo)
+    return ('.col.s12.m3.l3',[
+        m('.card-image.waves-effect', {onclick: onclick.bind(onclick,photo)}, [
+            m('img.responsive-img',{src: photo.thumbSrc, style: { width: '200px' }}),
+            m('span.card-title',photo.description + ' Likes: ' + photo.like.count)
+        ])
+    ]);
 }

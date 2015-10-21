@@ -34,7 +34,6 @@ function checkForFbRedirectUrl(location){
     // console.log(hashArr);
 
     // generate output url
-
     var URL = currSite + '/#'; // hash for hash routing
     URL += settings.loginRedirectRoute;
 
