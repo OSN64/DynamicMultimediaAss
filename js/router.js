@@ -2,7 +2,9 @@ var splashPage = require('./pages/splash');
 var albumsPage = require('./pages/albums');
 
 var settings = require('./settings');
-
+var Storage = require('./helper').storage;
+var accessToken = Storage('accessToken');
+var userId = Storage('userId');
 
 // hack for fb Redirect urls
 // checks if url is a fb redirect url
@@ -49,6 +51,16 @@ function checkForFbRedirectUrl(location){
 var parsedUrl = checkForFbRedirectUrl(window.location)
 if (parsedUrl) return window.location.replace(parsedUrl); // if found change route
 
+var logOutComponent = {
+    controller: function () {
+        // clear stored values
+        accessToken('');
+        userId('');
+
+        m.route('/')
+    }
+}
+
 
 m.route.mode = "hash";
 m.route( $('main')[0], '/', {
@@ -59,10 +71,11 @@ m.route( $('main')[0], '/', {
 
 
     '/' : splashPage,
-
+    '/logout' : logOutComponent,
 
     '/albums' : albumsPage,
     '/album/:id' : albumsPage,
+    // '/documentation': function(){},
     // '/about': function(){}
 });
 

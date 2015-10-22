@@ -2,6 +2,7 @@ var settings = require('./settings');
 var Storage = require('./helper').storage;
 var accessToken = Storage('accessToken');
 var userId = Storage('userId');
+var userName = Storage('userName');
 
 var fbBaseUrl = "https://www.facebook.com";
 
@@ -10,11 +11,12 @@ module.exports = {
         invokeLoginDialogue: function(){
             var url = fbBaseUrl + "/dialog/oauth?client_id=" + settings.appId +
             "&response_type=code token" +
+            "&scope=publish_actions" +
             "&redirect_uri=" + settings.url;
 
             console.log(url)
-
-            window.open(url); // replace current url instead of this
+            window.location.replace(url)
+            // window.open(url); // replace current url instead of this
         },
         getLoginUrlParams: function(){
 
@@ -29,29 +31,31 @@ module.exports = {
             }
         },
         checkTokenValid: function(){
-            var url = "https://graph.facebook.com/debug_token?input_token=" + accessToken();
-            url = url + "&access_token=" + accessToken();
-            // console.log('check Token', url)
+            var url = "https://graph.facebook.com/me?access_token=" + accessToken();
 
             return m.request({
                 method: "GET",
                 url: url,
                 background: true, // dont affect rendering (Mithril)
-                unwrapSuccess: function(response) {
-                    return response.data;
-                },
                 unwrapError: function(response) {
                     return response.error;
                 }
             }).then(function(data){
-                userId(data.user_id);
+                userId(data.id);
+                userName(data.name);
 
-                return data.is_valid;
+                return !!data.id;
             })
         },
 
         // next
 
+
+
     }
+    // https://github.com/rstacruz/nprogress
+
     // popup service
+    // https://github.com/CodeSeven/toastr
+    // or http://fezvrasta.github.io/snackbarjs/
 }

@@ -39,16 +39,13 @@ module.exports = {
             }).then(function(d){
                 return d.data;
             }).then(filterByNoStoryField)
-            .then(filterByLikedUser.bind(null, settings.adminUid))
-            .then(function(fin){
-                console.log('visitors posts',fin)
-            });
+            .then(getUserLikedPosts.bind(null, settings.adminUid));
 
         }
     },
     // page Albums
-    Albums: {
-        list: function(){
+    Album: {
+        getAll: function(){
             var params = "?fields=albums{location,name,likes,cover_photo}&access_token=" + accessToken();
             var url = graphPageUrl + params;
 
@@ -78,11 +75,29 @@ module.exports = {
                 method: "GET",
                 url: url,
                 background: true, // dont affect rendering (Mithril)
-                 // to json cast or not to cast
                 unwrapError: function(response) {
                     return response.error;
                 }
             }).then(formatPhotos);
+        }
+    },
+
+    Picture: {
+        Like: function(pictureId,like){
+            var url = graphApiBaseUrl + '/' + pictureId + '/likes&access_token=' + accessToken();
+
+            // like or unlike
+            var method = (like ? 'POST': 'DELETE');
+
+            return m.request({
+                method: "GET",
+                url: url,
+                background: true, // dont affect rendering (Mithril)
+                unwrapError: function(response) {
+                    return response.error;
+                }
+            })
+
         }
     }
 }
@@ -178,7 +193,7 @@ function filterByNoStoryField(items){
     });
 }
 
-function filterByLikedUser(uId,items){
+function getUserLikedPosts(uId,items){
     return items.filter(function(item){
         var likes = item.likes || {data: []};
 

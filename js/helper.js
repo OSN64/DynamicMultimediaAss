@@ -37,7 +37,7 @@ module.exports = {
     // closure for easy localStorage setting
     storage: function (key) {
         return function(val){
-            if(val) localStorage.setItem(key, val);
+            if(val != null || val != undefined) localStorage.setItem(key, val);
             return localStorage.getItem(key);
         }
     }

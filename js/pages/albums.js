@@ -3,7 +3,7 @@ var albumComponent = require('../components/album');
 var Services = require('../services');
 var Models = require('../models');
 var Page = Models.Page;
-var Albums = Models.Albums;
+var Album = Models.Album;
 
 module.exports = {
     //     //the Todo class has two properties
@@ -42,7 +42,7 @@ module.exports = {
 
             return Promise.all([
                 Page.getDetails(),
-                Albums.list(),
+                Album.getAll(),
                 Page.getVisitorsPosts()
             ]);
         }).then(function(all){ // set valuse
@@ -58,9 +58,11 @@ module.exports = {
             // return m.route('/')
         });
         // redraw stategy div
+        // m.redraw.strategy('diff');
         return {
             page: page, // object
             albums: albums, // array
+            visitorsPosts: visitorsPosts, //array
             albumOpen: albumOpen, // bool
             openAlbum: openAlbum, // function
 
@@ -71,12 +73,29 @@ module.exports = {
     },
 
     view: function(ctrl) {
-        return m('.container', [
+        var page = ctrl.page;
+        console.log(ctrl.visitorsPosts())
+
+        return m('.container', {config: persistent}, [
             !ctrl.albums().length ?  m.component( progressLoader, {id: 'page-load-progress'}) :
             m('.albums-view',[
 
                 m('#album-head', [
-                    albumsHead(ctrl.page)
+                    m('h1', page().name),
+                    m('.row', [
+                        m('.col.s12.m9.l8',[
+                            m('p', page().description)
+                        ]),
+                        m('.col.hide-on-small-only.m3.l4',[
+                            m('h5', 'Feed'),
+                            m('ul',[
+                                ctrl.visitorsPosts().map(function(post){
+                                    return m('li', m('p', post.message));
+                                })
+                            ])
+                        ]),
+
+                    ])
                 ]),
                 m('#albums-content', [
                     m('h1', "Top Australia Destinations"),
@@ -87,16 +106,19 @@ module.exports = {
                         }),
                     ])
                 ]),
-                ctrl.albumOpen() ? m.component(albumComponent, {id:m.route.param("id")}) : ''
-            ])
+            ]),
+            ctrl.albumOpen() ? m.component(albumComponent, {id:m.route.param("id")}) : ''
         ]);
     }
 };
+//a configuration that persists across route changes
+function persistent(el, isInit, context) {
+    context.retain = true
+}
 var albumsHead = function(page){
     return [
-        m('h1', page().name),
-        m('p', page().description)
-    ]
+
+    ];
 }
 
 var albumsCard = function(onclick,album){

@@ -4,7 +4,7 @@ module.exports = {
 
     adminUid: "",
 
-    url: "http://test.com",
+    url: "http://example.com",
 
     loginRedirectRoute: "/fbLogin"
 };

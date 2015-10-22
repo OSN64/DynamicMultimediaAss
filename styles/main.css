@@ -58,3 +58,10 @@ header, main, footer {
     left: 100%;
     top: -30px;
 }
+.btn-fb-like {
+    position: absolute;
+    right: 0px;
+}
+.card-photo .card-content {
+    height: 62px;
+}
