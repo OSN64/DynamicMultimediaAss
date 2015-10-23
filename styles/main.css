@@ -58,10 +58,23 @@ header, main, footer {
     left: 100%;
     top: -30px;
 }
+.card, .card-image {
+    overflow: visible;
+}
+.card {
+    margin-top: 26px;
+    margin-right: 26px;
+}
 .btn-fb-like {
     position: absolute;
-    right: 0px;
+    right: -26px;
+    top: -26px;
 }
 .card-photo .card-content {
     height: 62px;
+}
+.chip-likes {
+    position: absolute;
+    top: 35px;
+    right: -35px;
 }

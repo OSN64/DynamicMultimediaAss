@@ -8,15 +8,13 @@ var fbBaseUrl = "https://www.facebook.com";
 
 module.exports = {
     FB: {
-        invokeLoginDialogue: function(){
+        getLoginUrl: function(){
             var url = fbBaseUrl + "/dialog/oauth?client_id=" + settings.appId +
             "&response_type=code token" +
             "&scope=publish_actions" +
             "&redirect_uri=" + settings.url;
 
-            console.log(url)
-            window.location.replace(url)
-            // window.open(url); // replace current url instead of this
+            return url;
         },
         getLoginUrlParams: function(){
 
@@ -26,11 +24,11 @@ module.exports = {
                 error: m.route.param("error"),
 
                 accessToken: m.route.param("accToken"),
-                tokenExpiry: m.route.param("exp"),
-                code: m.route.param("code")
+                // tokenExpiry: m.route.param("exp"),
+                // code: m.route.param("code")
             }
         },
-        checkTokenValid: function(){
+        isLoggedIn: function(){
             var url = "https://graph.facebook.com/me?access_token=" + accessToken();
 
             return m.request({
@@ -50,8 +48,11 @@ module.exports = {
 
         // next
 
+    },
 
-
+    Popup: function (args,cb) {
+        var toastContent = (args.text || 'alert');
+        return Materialize.toast(toastContent, args.timeout || 5000, args.class || '',cb);
     }
     // https://github.com/rstacruz/nprogress
 

@@ -19,7 +19,7 @@ module.exports = {
         // console.log('dont')
         // m.redraw.strategy("none");
         return m('nav', {config: navConf}, m('.nav-wrapper', [
-            m('a', { href: '#!', class: 'brand-logo center' }, 'logo'),
+            m('a', { href: '#!', class: 'brand-logo center' }, 'Paradise Point'),
 
             m('a', { href: '#', class: 'button-collapse', 'data-activates': 'mobile-demo' }, m('i', { class: 'material-icon' }, 'menu') ),
 

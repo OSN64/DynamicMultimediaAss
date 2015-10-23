@@ -8,27 +8,24 @@ var Album = Models.Album;
 module.exports = {
     //     //the Todo class has two properties
     controller: function() {
-        console.log('aaa')
+        // console.log('aaa')
         // var error = m.prop('');
         var page = m.prop({});
         var albums = m.prop([]);
         var visitorsPosts = m.prop([]);
         var albumOpen = m.prop(false);
 
-        var onunload = function(){
-            console.log('this unloaded');
-        }
-
         var openAlbum = function(id){
-            var route = '/album/' + id;
-
-            var currRouteIsSame = m.route() == route;
-            // console.log(route,m.route(),currRouteIsSame)
-
-            if(currRouteIsSame){ // just moved in from route change
-                albumOpen(true);
-            }
-            else m.route(route);
+            // var route = '/album/' + id;
+            //
+            // var currRouteIsSame = m.route() == route;
+            // // console.log(route,m.route(),currRouteIsSame)
+            //
+            // if(currRouteIsSame){ // just moved in from route change
+            //     albumOpen(true);
+            // }
+            // else m.route(route);
+            m.mount(document.getElementsByTagName('footer')[0],m.component(albumComponent, {id:id}))
         }
 
         var currAlbumId = +m.route.param("id"); // convert to integer
@@ -37,7 +34,7 @@ module.exports = {
             openAlbum(currAlbumId);
         }
 
-        Services.FB.checkTokenValid().then(function(valid){
+        Services.FB.isLoggedIn().then(function(valid){
             if(!valid) return Promise.reject('Token Not Valid');
 
             return Promise.all([
@@ -46,13 +43,16 @@ module.exports = {
                 Page.getVisitorsPosts()
             ]);
         }).then(function(all){ // set valuse
-
             page(all[0]);
             albums(all[1]);
             visitorsPosts(all[2]);
         }).then(m.redraw,function(e){
 
+            Services.Popup({text: 'Error Unable to Load Page', timeout: 4000}, function done(){
+                m.route('/'); // logout
+            });
             console.log('error Token Not Valid', e)
+            // 'Unable to Load Please Login again' .. button to home route
             // popup service
             // pop up 'invalid Login token' .. redirect home
             // return m.route('/')
@@ -74,40 +74,27 @@ module.exports = {
 
     view: function(ctrl) {
         var page = ctrl.page;
-        console.log(ctrl.visitorsPosts())
 
         return m('.container', {config: persistent}, [
             !ctrl.albums().length ?  m.component( progressLoader, {id: 'page-load-progress'}) :
             m('.albums-view',[
-
                 m('#album-head', [
-                    m('h1', page().name),
-                    m('.row', [
-                        m('.col.s12.m9.l8',[
-                            m('p', page().description)
-                        ]),
-                        m('.col.hide-on-small-only.m3.l4',[
-                            m('h5', 'Feed'),
-                            m('ul',[
-                                ctrl.visitorsPosts().map(function(post){
-                                    return m('li', m('p', post.message));
-                                })
-                            ])
-                        ]),
-
-                    ])
+                    albumsHead(page,ctrl.visitorsPosts)
                 ]),
                 m('#albums-content', [
                     m('h1', "Top Australia Destinations"),
                     m('.divider'),
                     m('.albums-items.row', [
+                        ctrl.albums().length ?
                         ctrl.albums().map(function(album){
                             return albumsCard(ctrl.openAlbum,album)
-                        }),
+                        }) :
+                        p('h1', 'No Destinations Found')
+                        ,
                     ])
                 ]),
             ]),
-            ctrl.albumOpen() ? m.component(albumComponent, {id:m.route.param("id")}) : ''
+            // ctrl.albumOpen() ? m.component(albumComponent, {id:m.route.param("id")}) : ''
         ]);
     }
 };
@@ -115,10 +102,25 @@ module.exports = {
 function persistent(el, isInit, context) {
     context.retain = true
 }
-var albumsHead = function(page){
-    return [
+var albumsHead = function(page,posts){
+    return m('.row', [
+        m('.col.s12.m9.l8',[
+            m('h1', page().name),
+            m('p', page().description)
+        ]),
+        m('.col.hide-on-small-only.m3.l4',[
+            m('ul.collection.with-header',[
+                m('li.collection-header', 'Feed'),
 
-    ];
+                posts().map(function(post){
+                    return m('li.collection-item', [
+                        m('p', post.message),
+                        m('sub', 'Admin liked this post')
+                    ]);
+                })
+            ])
+        ]),
+    ]);
 }
 
 var albumsCard = function(onclick,album){

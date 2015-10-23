@@ -4,7 +4,7 @@ var Storage = require('./helper').storage;
 var accessToken = Storage('accessToken');
 
 var graphApiBaseUrl = "https://graph.facebook.com/v2.5";
-var graphPageUrl = graphApiBaseUrl + '/' + settings.pageId
+var graphPageUrl = graphApiBaseUrl + '/' + settings.pageId;
 
 module.exports = {
 
@@ -83,20 +83,22 @@ module.exports = {
     },
 
     Picture: {
-        Like: function(pictureId,like){
-            var url = graphApiBaseUrl + '/' + pictureId + '/likes&access_token=' + accessToken();
+        like: function(pictureId,like){
+            var url = graphApiBaseUrl + '/' + pictureId + '/likes?access_token=' + accessToken();
 
             // like or unlike
             var method = (like ? 'POST': 'DELETE');
 
             return m.request({
-                method: "GET",
+                method: method,
                 url: url,
                 background: true, // dont affect rendering (Mithril)
                 unwrapError: function(response) {
                     return response.error;
                 }
-            })
+            }).then(function(data){
+               return like;
+            });
 
         }
     }

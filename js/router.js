@@ -14,7 +14,7 @@ function checkForFbRedirectUrl(location){
     var hash = location.hash;
     var currSite = location.origin;
 
-    var isFbUrl = location.href.indexOf(currSite + '/?#') == 0; // if this is the first substring in the url
+    var isFbUrl = location.href.indexOf(currSite + '/?') == 0; // if this is the first substring in the url
 
     // console.log(isFbUrl,currSite,hash)
 
@@ -32,7 +32,13 @@ function checkForFbRedirectUrl(location){
             value: itemSplit[1]
         }
     });
-
+    // replace all = and &
+    // var rawParams = iURL.index('?');
+    // if (rawParams > -1) {
+    //     window.location.replace(location.origin +'/'+ rawParams.replace(/&|=/g, '/'));
+    //     } else {
+    //     return;
+    // }
     // console.log(hashArr);
 
     // generate output url

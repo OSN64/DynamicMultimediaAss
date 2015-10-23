@@ -1,5 +1,7 @@
+var Models = require('../models');
 var Storage = require('../helper').storage;
 var userId = Storage('userId');
+var Picture = Models.Picture;
 var lightbox = window.lity();
 
 
@@ -9,7 +11,7 @@ module.exports = {
         var photos = {};
 
         // convert array to hash map
-        var photosHash = args.photos.reduce(function(map, photo) {
+        var photosHash = args.photos.reduce(function(map, photo) { // does it call the last value
 
             map[photo.id] = {
                 id: photo.id,
@@ -19,18 +21,28 @@ module.exports = {
 
                 // non static variables
                 likeCount: m.prop(photo.like.count),
-                likedByUser: m.prop(hasUserId(photo.like.users,userId))
+                likedByUser: m.prop(hasUserId(photo.like.users,userId()))
             };
             return map;
         }, {});
 
         function likeOrUnlike(photo){
             var Liked = photosHash[photo.id].likedByUser;
-            var pLikeCount = photosHash[photo.id].likeCount;
+            var likeCount = photosHash[photo.id].likeCount;
+
+            Picture.like(photo.id,!Liked()).then(function(like){
+
+                if(like) likeCount(likeCount() + 1)
+                else likeCount(likeCount() - 1)
+
+                Liked(like); // set val
+
+            }).then(m.redraw);
+
             // model photo like
-            pLikeCount(pLikeCount() + 1);
-            Liked(!Liked());
-            m.redraw(true);
+            // likeCount(likeCount() + 1);
+            // Liked(!Liked());
+            // m.redraw(true);
         }
 
         return {
@@ -67,31 +79,21 @@ var photoCard = function(onCardClick, onLikeClick, photo){
     // onLikeClick.bind(null,photo.id, !photo.likedByUser)
     //  <i class="small material-icons">thumb_up</i>
     return m('.col.s12.m6.l4',[
-        m(".card.card-photo", [
+        m(".card.card-photo.hoverable", [
     		m(".card-image.waves-effect.waves-block.waves-light", [
     			m("img.responsive-img", {src: photo.thumbSrc, style: { height: '320px' }, onclick: onCardClick.bind(null,photo)}),
                 m("a.btn-fb-like.btn-floating.waves-effect.waves-light.btn-large", { onclick: onLikeClick.bind(null,photo), class: photo.likedByUser() ? 'blue' : '' } , [
                     m("i.material-icons", "thumbs_up_down")
                 ]),
-                // m("span.card-title", photo.description) // use content or this for desc
+                m('.chip.chip-likes', photo.likeCount() + ' Likes'),
+                m("span.card-title", photo.description) // use content or this for desc
     		]),
-            m('span.badge', photo.likeCount() + ' Likes'),
-    		m(".card-content", [
-    			m("p", photo.description)
-    		]),
+    		// m(".card-content", [
+    		// 	m("p", photo.description)
+    		// ]),
     		// m(".card-action", [
     		// 	m("a[href='#']", ' Likes: ' + photo.likeCount())
     		// ])
     	])
-
-        // m('.card', [
-        //     m('.card-image.waves-effect.waves-block.waves-light', {onclick: onCardClick.bind(null,photo)}, [
-        //         m('img.responsive-img',{src: photo.thumbSrc, style: { height: '320px' }}),
-        //         // m('span.card-title', + ' Likes: ' + photo.likeCount())
-        //     ]),
-        //     m('.card-content',[
-        //         m('span.card-title.activator.grey-text.text-darken-4', photo.description)
-        //     ])
-        // ])
     ]);
 }
