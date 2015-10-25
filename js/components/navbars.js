@@ -15,11 +15,10 @@ module.exports = {
         m.redraw.strategy("diff");
     },
     view: function(ctrl) {
+        // get current route
         var currRoute = m.route();
-        // console.log('dont')
-        // m.redraw.strategy("none");
+
         return m('nav', {config: navConf}, m('.nav-wrapper', [
-            m('a', { href: '#!', class: 'brand-logo center' }, 'Paradise Point'),
 
             m('a', { href: '#', class: 'button-collapse', 'data-activates': 'mobile-demo' }, m('i', { class: 'material-icon' }, 'menu') ),
 
@@ -33,7 +32,7 @@ module.exports = {
             m('ul#mobile-demo', { class: 'side-nav fixed'},[
                 sideLinks.map(function(link) {
                     var isActiveRoute = (currRoute == link.url ? 'active' : '');
-
+                    
                     return m('li', { class: isActiveRoute }, [
                         m('a', { href: link.url, config: m.route }, link.title)
                     ]);
@@ -43,8 +42,6 @@ module.exports = {
         ]));
     }
 }
-    // {title: "Logout", url: "#/logout"},
-
 
 var navConf = function(element, isInitialized, context) {
     if (!isInitialized) {
@@ -53,6 +50,4 @@ var navConf = function(element, isInitialized, context) {
             // closeOnClick: true
         });
     }
-
-
 };

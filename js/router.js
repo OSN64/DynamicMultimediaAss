@@ -1,5 +1,7 @@
 var splashPage = require('./pages/splash');
 var albumsPage = require('./pages/albums');
+var aboutPage = require('./pages/about');
+var docPage = require('./pages/documentation');
 
 var settings = require('./settings');
 var Storage = require('./helper').storage;
@@ -16,8 +18,6 @@ function checkForFbRedirectUrl(location){
 
     var isFbUrl = location.href.indexOf(currSite + '/?') == 0; // if this is the first substring in the url
 
-    // console.log(isFbUrl,currSite,hash)
-
     if(!isFbUrl) return;
 
     if(hash[0] == "#") hash = hash.substr(1); // remove first hash
@@ -32,16 +32,7 @@ function checkForFbRedirectUrl(location){
             value: itemSplit[1]
         }
     });
-    // replace all = and &
-    // var rawParams = iURL.index('?');
-    // if (rawParams > -1) {
-    //     window.location.replace(location.origin +'/'+ rawParams.replace(/&|=/g, '/'));
-    //     } else {
-    //     return;
-    // }
-    // console.log(hashArr);
 
-    // generate output url
     var URL = currSite + '/#'; // hash for hash routing
     URL += settings.loginRedirectRoute;
 
@@ -50,13 +41,14 @@ function checkForFbRedirectUrl(location){
         URL += urlParam;
     });
 
-
     return URL;
 }
 
+// check if fb url found then change route
 var parsedUrl = checkForFbRedirectUrl(window.location)
-if (parsedUrl) return window.location.replace(parsedUrl); // if found change route
+if (parsedUrl) return window.location.replace(parsedUrl);
 
+// function for logging the user out
 var logOutComponent = {
     controller: function () {
         // clear stored values
@@ -75,15 +67,11 @@ m.route( $('main')[0], '/', {
     // error route
     '/fbLogin/error_reason/:errorReason/error/:error/error_description/:errorDesc' : splashPage,
 
-
     '/' : splashPage,
     '/logout' : logOutComponent,
 
     '/albums' : albumsPage,
     '/album/:id' : albumsPage,
-    // '/documentation': function(){},
-    // '/about': function(){}
+    '/doc': docPage,
+    '/about': aboutPage
 });
-
-
-// another router for footer

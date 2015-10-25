@@ -3,8 +3,7 @@ module.exports = {
     pageId: "",
 
     adminUid: "",
-
-    url: "http://example.com",
+    url: "",
 
     loginRedirectRoute: "/fbLogin"
 };

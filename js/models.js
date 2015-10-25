@@ -9,9 +9,9 @@ var graphPageUrl = graphApiBaseUrl + '/' + settings.pageId;
 module.exports = {
 
     Page: {
+        // request page details
         getDetails: function(){
-            var params = "?fields=description,name&access_token=" + accessToken();
-            var url = graphPageUrl + params;
+            var url = graphPageUrl + "?fields=description,name&access_token=" + accessToken();
 
             return m.request({
                 method: "GET",
@@ -22,13 +22,11 @@ module.exports = {
                 }
             });
         },
-
+        // request array of feed posts
         getVisitorsPosts: function(){
 
-            var params = "/feed?fields=likes{name},story,message&access_token=" + accessToken();
-            var url = graphPageUrl + params;
+            var url = graphPageUrl + "/feed?fields=likes{name},story,message&access_token=" + accessToken();
 
-            // request gets page feed
             return m.request({
                 method: "GET",
                 url: url,
@@ -40,20 +38,17 @@ module.exports = {
                 return d.data;
             }).then(filterByNoStoryField)
             .then(getUserLikedPosts.bind(null, settings.adminUid));
-
         }
     },
     // page Albums
     Album: {
         getAll: function(){
-            var params = "?fields=albums{location,name,likes,cover_photo}&access_token=" + accessToken();
-            var url = graphPageUrl + params;
+            var url = graphPageUrl + "?fields=albums{location,name,likes,cover_photo}&access_token=" + accessToken();
 
             return m.request({
                 method: "GET",
                 url: url,
                 background: true, // dont affect rendering (Mithril)
-                 // to json cast or not to cast
                 unwrapError: function(response) {
                     return response.error;
                 }
@@ -64,12 +59,10 @@ module.exports = {
             .then(getCoverPhotos)
             .then(sortByLikesDesc)
             .then(formatEachAlbum);
-            // .then(printEach)
         },
 
         get: function(id){
-            var params = "?fields=photos{images,likes,name},name&access_token=" + accessToken();
-            var url = graphApiBaseUrl + '/' + id + params;
+            var url = graphApiBaseUrl + '/' + id + "?fields=photos{images,likes,name},name&access_token=" + accessToken();
 
             return m.request({
                 method: "GET",
@@ -82,12 +75,12 @@ module.exports = {
         }
     },
 
-    Picture: {
-        like: function(pictureId,like){
-            var url = graphApiBaseUrl + '/' + pictureId + '/likes?access_token=' + accessToken();
+    Photo: { // photo
+        toggleLike: function(photo){ // give photo // toggle like
+            var url = graphApiBaseUrl + '/' + photo.id + '/likes?access_token=' + accessToken();
 
             // like or unlike
-            var method = (like ? 'POST': 'DELETE');
+            var method = (!photo.likedByUser() ? 'POST': 'DELETE');
 
             return m.request({
                 method: method,
@@ -97,22 +90,20 @@ module.exports = {
                     return response.error;
                 }
             }).then(function(data){
-               return like;
+               return !photo.likedByUser();
             });
 
         }
     }
 }
-
+// request cover image source
 var getCoverSrc = function(coverId){
-    var params = "?fields=source&access_token=" + accessToken();
-    var url = graphApiBaseUrl + '/' + coverId + params;
+    var url = graphApiBaseUrl + '/' + coverId + "?fields=source&access_token=" + accessToken();
 
     return m.request({
         method: "GET",
         url: url,
         background: true, // dont affect rendering (Mithril)
-         // to json cast or not to cast
         unwrapError: function(response) {
             return response.error;
         }
@@ -120,12 +111,14 @@ var getCoverSrc = function(coverId){
         return data.source;
     })
 }
+// Filter array by existance of the location string australia
 function filterByAulocation(data){
     return data.filter(function(al){
         var loc = al.location || '';
         return loc.toLowerCase().indexOf('australia') >= 0;
-    })
+    });
 }
+// for each album populate with cover souce
 function getCoverPhotos(albums){
     albums = albums.map(function (album) {
         return getCoverSrc(album.cover_photo.id).then(function(coverSource){
@@ -135,20 +128,16 @@ function getCoverPhotos(albums){
     });
     return Promise.all(albums);
 }
+// sort array of liked from biggest to smallest
 function sortByLikesDesc(data){
     return data.sort(function(a,b){
         var prevLikes = a.likes.data.length;
         var nextLikes = b.likes.data.length;
-        return prevLikes < nextLikes;
-    });
-}
 
-function printEach(data){
-    return data.forEach(function(al){
-        console.log(al)
+        return nextLikes - prevLikes;
     });
-    // console.log(data)
 }
+// return formated data
 function formatEachAlbum(data){
     return data.map(function(al){
         return {
@@ -167,11 +156,13 @@ function getImageByHeightLargest(data){
         return prevHeight < nextHeight;
     })[0];
 }
+
 function getImageByHeight(images,height){
-    return images.filter(function(image){
+    return images.filter(function(image){ // reduce
         return image.height == height;
     })[0] || images[images.length - 1];
 }
+// generate formated data with photos
 function formatPhotos(data){
     data.photos = data.photos.data.map(function (photo) {
 
@@ -182,7 +173,7 @@ function formatPhotos(data){
             lgSrc: getImageByHeightLargest(photo.images).source,
             like: {
                 count: photo.likes.data.length, // get num of likes
-                users: photo.likes.data
+                users: photo.likes.data // might not need this
             }
         };
     });
@@ -195,12 +186,15 @@ function filterByNoStoryField(items){
     });
 }
 
-function getUserLikedPosts(uId,items){
-    return items.filter(function(item){
-        var likes = item.likes || {data: []};
-
-        return likes.data.filter(function(user){
-            return user.id == uId;
-        }).length;
+function getUserLikedPosts(uId,posts){
+    return posts.filter(function(post){
+        var likes = post.likes || {data: []};
+        return isLikedBy(likes.data,uId);
     });
+}
+// check if array of users has user id
+function isLikedBy (likesArr,userId){
+    return likesArr.filter(function(user){
+        return user.id == userId;
+    }).length;
 }

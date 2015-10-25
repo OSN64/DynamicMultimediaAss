@@ -7,6 +7,7 @@ var userName = Storage('userName');
 var fbBaseUrl = "https://www.facebook.com";
 
 module.exports = {
+
     FB: {
         getLoginUrl: function(){
             var url = fbBaseUrl + "/dialog/oauth?client_id=" + settings.appId +
@@ -19,15 +20,11 @@ module.exports = {
         getLoginUrlParams: function(){
 
             return {
-                errorReason: m.route.param("errorReason"),
-                errorDescription: m.route.param("errorDesc"),
                 error: m.route.param("error"),
-
                 accessToken: m.route.param("accToken"),
-                // tokenExpiry: m.route.param("exp"),
-                // code: m.route.param("code")
             }
         },
+        // send request to see is users access token is valid
         isLoggedIn: function(){
             var url = "https://graph.facebook.com/me?access_token=" + accessToken();
 
@@ -43,10 +40,8 @@ module.exports = {
                 userName(data.name);
 
                 return !!data.id;
-            })
+            });
         },
-
-        // next
 
     },
 
@@ -54,9 +49,4 @@ module.exports = {
         var toastContent = (args.text || 'alert');
         return Materialize.toast(toastContent, args.timeout || 5000, args.class || '',cb);
     }
-    // https://github.com/rstacruz/nprogress
-
-    // popup service
-    // https://github.com/CodeSeven/toastr
-    // or http://fezvrasta.github.io/snackbarjs/
 }

@@ -4,7 +4,6 @@ var Models = require('../models');
 var Album = Models.Album;
 
 module.exports = {
-    //the Todo class has two properties
 
     controller: function(args) {
         args = args || {};
@@ -14,11 +13,12 @@ module.exports = {
             name: m.prop(''),
             photos: m.prop([])
         };
-
-        // ctrl.modalOpen = m.prop(false);
+        console.log('alll')
         var error = m.prop('');
 
-        // m.redraw.strategy("none");
+        args.r = function(){
+            console.log(args.id, 'child called')
+        }
 
         var loadAlbum = function(id){
             Album.get(id)
@@ -37,6 +37,7 @@ module.exports = {
                 m.redraw(true);
             });
         }
+                m.redraw.strategy('none');
 
         loadAlbum(album.id);
 
@@ -49,30 +50,26 @@ module.exports = {
     },
     view: function(ctrl,args) {
         var album = ctrl.album;
-
-        // loading
-        // console.log('state change',ctrl);
+        console.log('state change',ctrl);
         return m('.album-modal', {class: "modal modal-fixed-footer", config:modalOpen}, [
             m('.modal-content',[
                 m('h4', album.name()),
                 function checkState(){
                     if (ctrl.error()) return errorView(ctrl.error());
                     // photos component
-                    else if (album.photos().length) return m.component( photosComponent, {photos: album.photos()} );
+                    else if (album.photos().length) return m.component( photosComponent, {id: album.id, photos: album.photos()} );
                     // animated progress icon
                     else return m.component( progressLoader, {id: 'album-load-progress'} );
                 }(),
             ]),
-            // m('.modal-footer',[
-            //     m('button',{class: "modal-action modal-close waves-effect waves-green btn-flat"}, "Agree")
-            // ])
         ]);
     }
 };
 //
-var modalOpen = function(element, isInitialized, context) {
-    if (!isInitialized) {
-        $(element).openModal();
+var modalOpen = function(el, isInit, ctx) {
+    // ctx.retain = true;
+    if (!isInit) {
+        $(el).openModal();
     }
 };
 var errorView = function(error){
