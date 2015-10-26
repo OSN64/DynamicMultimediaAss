@@ -1,0 +1,23 @@
+{
+  "name": "dynamic-multimedia-ass",
+  "version": "1.0.0",
+  "description": "One page Gallery web app with mithril using fb graph api",
+  "main": "watcher.js",
+  "dependencies": {
+    "browserify-watcher": "^2.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OSN64/DynamicMultimediaAss.git"
+  },
+  "author": "osn64",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/OSN64/DynamicMultimediaAss/issues"
+  },
+  "homepage": "https://github.com/OSN64/DynamicMultimediaAss#readme"
+}

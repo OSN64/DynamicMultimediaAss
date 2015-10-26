@@ -1,0 +1,197 @@
+
+header, main, footer {
+    padding-left: 240px;
+}
+body {
+    background-image: url(http://www.cityofbelleairbeach.com/wp-content/uploads/2014/02/Beach-Wallpaper-Starfish2.jpg);
+    background-repeat: round;
+    background-attachment: fixed;
+}
+nav .nav-wrapper .active {
+    background-color: #EE6E73 !important;
+    font-weight: bold;
+}
+nav .nav-wrapper .active a {
+    color: #fff;
+}
+nav .nav-wrapper ul.right li a {
+    margin-right: 2em;
+    font-weight: bold;
+}
+img {
+    transition: all 3s ease;
+}
+.container {
+    display: block;
+    padding: 20px;
+    background-color: rgba(153, 176, 173, 0.93);
+    border-radius: 15px 50px 30px 5px;
+    transition: all 3s ease;
+    box-shadow: 0px 3px 10px #000;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+.modal .modal-content h4 {
+    border-bottom: 3px solid #000;
+}
+.modal .modal-content {
+    height: 100%;
+}
+@media only screen and (max-width : 992px) {
+    .side-nav.fixed {
+        left: -105%;
+    }
+    .side-nav.fixed.right-aligned {
+        right: -105%;
+        left: auto;
+    }
+    header, main, footer {
+        padding-left: initial;
+    }
+}
+.nav-wrapper a .material-icon {
+    background-color: #5CACA5;
+}
+.album-modal {
+    background-color: rgba(153, 176, 173, 0.93);
+}
+.albums-items {
+    margin-top: 20px;
+}
+.item-image {
+    height: 330px;
+}
+.card.large {
+    height: initial;
+}
+.card.large .card-image {
+    height: 300px;
+}
+.card .card-title { visibility: hidden; }
+.card .card-image:hover .card-title { visibility: visible; }
+.card .card-image .card-title {
+    background-color: rgba(0, 0, 0, 0.65);
+}
+.card-title {
+    color: #fff;
+    font-size: 24px;
+    font-weight: 300;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 20px;
+
+}
+.btn-fb-login {
+    position: absolute;
+    left: 97%;
+    top: -20%;
+}
+.card, .card-image {
+    overflow: visible;
+}
+.card {
+    margin-top: 26px;
+    margin-right: 26px;
+}
+.btn-fb-like {
+    position: absolute;
+    right: -26px;
+    top: -26px;
+    background-color: #EE6E73;
+}
+.card-photo .card-content {
+    height: 62px;
+}
+.chip-likes {
+    position: absolute;
+    top: 35px;
+    right: -35px;
+}
+.album-container {
+    margin: 10px;
+    float: left;
+    min-width: 400px;
+}
+.album-container .card {
+    border-radius: 15px 50px 30px 5px ;
+}
+.album-container img {
+    border-radius: 15px 50px 30px 5px !important;
+    min-width: 400px;
+    max-width: 500px
+}
+#feed {
+    border-radius: 15px 50px 30px 5px ;
+    background-color: rgb(84, 110, 122);
+}
+#feed .collection-item {
+    background-color: rgb(84, 110, 122);
+    border-bottom: 1px solid #9BB0AA;
+}
+#feed .row { margin-bottom: 0px; }
+.collection {
+    border: none;
+}
+.image-load {
+    -webkit-opacity: 0;
+    -moz-opacity: 0;
+    opacity: 0;
+
+    -webkit-transition: all 3s ease;
+    -moz-transition: all 3s ease;
+    -ms-transition: all 3s ease;
+    -o-transition: all 3s ease;
+    transition: all 3s ease;
+}
+.opacity-one {
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+    opacity: 1;
+}
+#page-load-progress {
+    position: absolute;
+    top: 50%;
+    left: 55%;
+}
+#album-load-progress {
+    position: absolute;
+    left: 45%;
+    top: 50%;
+}
+#album-head {
+    margin-top: 20px;
+}
+#album-head .card, #main-splash .card {
+    margin-top: 20px;
+    border-radius: 15px 50px 30px 5px;
+}
+#main-splash .card {
+    position: absolute;
+    top: 40%;
+    left: 40%;
+    width: 500px;
+}
+#main-splash .card-title {
+    visibility: visible;
+    position: initial;
+}
+#crab-anim {
+    display: inline-block;
+    position: absolute;
+    bottom: 0%;
+    right: 0%;
+    animation: right-to-left 10s ease-in-out 2s infinite alternate;
+}
+#crab-anim img {
+    width: 150px;
+    height: 100px;
+}
+@keyframes right-to-left {
+    from {
+        right: 5%;
+    }
+    to {
+        right: 75%;
+    }
+}
