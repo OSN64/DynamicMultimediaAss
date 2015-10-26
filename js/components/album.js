@@ -15,7 +15,6 @@ module.exports = {
         };
         var error = m.prop('');
 
-
         var loadAlbum = function(id){
             Album.get(id)
             .then(function(iAlbum){

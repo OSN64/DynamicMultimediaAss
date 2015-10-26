@@ -16,7 +16,7 @@ module.exports = {
         }
         else if (params.error){
             error(params.errorDescription) // show error
-            // popup unable to Authenticate 
+            // popup unable to Authenticate
         }
 
         function openLoginDialogue(){

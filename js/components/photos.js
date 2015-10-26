@@ -63,7 +63,6 @@ function isLikedBy (likesArr,userId){
 
 // // row columns
 var photoCard = function(listId, photo, onLikeClick){
-
     return m('.col.s12.m6.l4',[
         m(".card.card-photo.hoverable", [
             m(".card-image.waves-effect.waves-block.waves-light", [

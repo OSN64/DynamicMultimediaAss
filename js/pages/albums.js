@@ -33,6 +33,7 @@ module.exports = {
                 Promise.delay(2000)
             ]);
         },function (e) {
+
             Services.Popup({text: 'Error not logged in. Redirecting...', timeout: 4000}, function done(){
                 m.route('/logout'); // logout
             });
@@ -124,6 +125,7 @@ var albumsCard = function(onclick,album){
         m('.card', [
             m('.card-image.waves-effect',{onclick: onclick.bind(onclick,album.id)},[
                 m('img.responsive-img.hoverable.image-load',{config: loadImage, src: album.coverSource, style: { height: '400px'}}),
+
                 m('span.card-title',album.name || '')
             ])
         ])

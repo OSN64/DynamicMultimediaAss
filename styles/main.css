@@ -18,9 +18,12 @@ nav .nav-wrapper ul.right li a {
     margin-right: 2em;
     font-weight: bold;
 }
+<<<<<<< HEAD
 img {
     transition: all 3s ease;
 }
+=======
+>>>>>>> 5af0921b42271bf18d884d6bd9fedc364ae3949b
 .container {
     display: block;
     padding: 20px;
@@ -52,9 +55,12 @@ img {
 .nav-wrapper a .material-icon {
     background-color: #5CACA5;
 }
+<<<<<<< HEAD
 .album-modal {
     background-color: rgba(153, 176, 173, 0.93);
 }
+=======
+>>>>>>> 5af0921b42271bf18d884d6bd9fedc364ae3949b
 .albums-items {
     margin-top: 20px;
 }
@@ -162,10 +168,13 @@ img {
 #album-head {
     margin-top: 20px;
 }
+<<<<<<< HEAD
 #album-head .card, #main-splash .card {
     margin-top: 20px;
     border-radius: 15px 50px 30px 5px;
 }
+=======
+>>>>>>> 5af0921b42271bf18d884d6bd9fedc364ae3949b
 #main-splash .card {
     position: absolute;
     top: 40%;

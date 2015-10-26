@@ -32,7 +32,6 @@ module.exports = {
             m('ul#mobile-demo', { class: 'side-nav fixed'},[
                 sideLinks.map(function(link) {
                     var isActiveRoute = (currRoute == link.url ? 'active' : '');
-
                     return m('li', { class: isActiveRoute }, [
                         m('a', { href: link.url, config: m.route }, link.title)
                     ]);
