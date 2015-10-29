@@ -81,6 +81,7 @@ var photoCard = function(listId, photo, onLikeClick){
 
 // mithril config, when image loads add class
 var loadImage = function (el,isInit,ctx) {
+    ctx.retain = true;
     if(!isInit){
         $(el).load(function(){
             $(el).addClass('opacity-one');

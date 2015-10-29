@@ -23,6 +23,7 @@ module.exports = {
             openAlbum(currAlbumId);
         }
 
+        // chain of functions that load the page
         Services.FB.isLoggedIn().then(function(valid){
             if(!valid) return Promise.reject('Token Not Valid');
 
@@ -32,18 +33,16 @@ module.exports = {
                 Page.getVisitorsPosts(),
                 Promise.delay(2000)
             ]);
-        },function (e) {
-
-            Services.Popup({text: 'Error not logged in. Redirecting...', timeout: 4000}, function done(){
-                m.route('/logout'); // logout
-            });
         }).then(function(all){ // set valuse
             page(all[0]);
             albums(all[1]);
             visitorsPosts(all[2]);
             ready(true);
 
-        }).then(m.redraw,function(e){
+        }).then(m.redraw, function onerror(e){
+            Services.Popup({text: 'Error not logged in. Redirecting...', timeout: 4000}, function done(){
+                m.route('/logout'); // logout
+            });
             Services.Popup({text: 'Error Unable to Load Page'});
         });
 
@@ -87,7 +86,8 @@ module.exports = {
     }
 };
 
-function fadeIn(el, isInit, context) {
+function fadeIn(el, isInit, ctx) {
+    ctx.retain = true;
     if (!isInit) {
         $(el).hide().fadeIn();
     }

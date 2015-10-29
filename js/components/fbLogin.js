@@ -3,7 +3,6 @@ var Storage = require('../helper').storage;
 
 module.exports = {
     controller: function () {
-        var error = m.prop('');
         var accessToken = Storage('accessToken');
 
         // check if Url Has token
@@ -15,8 +14,8 @@ module.exports = {
             m.route('/albums');
         }
         else if (params.error){
-            error(params.errorDescription) // show error
             // popup unable to Authenticate
+            Services.Popup({text: 'Error Unable Authenticate From Facebook'});
         }
 
         function openLoginDialogue(){
@@ -25,7 +24,6 @@ module.exports = {
         }
 
         return {
-            error: error,
             openLogin: openLoginDialogue
         }
     },
