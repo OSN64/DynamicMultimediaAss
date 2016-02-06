@@ -1,10 +1,10 @@
 module.exports = {
-    appId: "533953753419294",
-    pageId: "815157038515764",
+    appId: "",
+    pageId: "",
 
-    adminUid: "815157038515764",
+    adminUid: "",
 
-    url: "http://travel.techthrones.com",
+    url: "",
 
     loginRedirectRoute: "/fbLogin"
 };
